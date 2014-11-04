@@ -38,7 +38,7 @@ public class SplashActivity extends Activity {
 	/**
 	 * 实例一个进度条,用来表示正在加载数据
 	 */
-	private ProgressBar prbLoad;
+	private ProgressBar mProgressBar;
 	/**
 	 * 定义一个Handler,用来表示跳转到不同界面
 	 */
@@ -63,7 +63,7 @@ public class SplashActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
-		prbLoad = (ProgressBar) findViewById(R.id.prbLoadData);
+		mProgressBar = (ProgressBar) findViewById(R.id.progess_bar_data);
 		init();
 	}
 
@@ -82,8 +82,8 @@ public class SplashActivity extends Activity {
 	 * 用于跳转进入HomeActivity
 	 */
 	private void goHome() {
-		Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
-		SplashActivity.this.startActivity(intent);
+		Intent mIntent = new Intent(SplashActivity.this, HomeActivity.class);
+		SplashActivity.this.startActivity(mIntent);
 		SplashActivity.this.finish();
 		SplashActivity.this.overridePendingTransition(
 				R.anim.anim_in_right2left, R.anim.anim_out_left2right);
@@ -107,7 +107,7 @@ public class SplashActivity extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			prbLoad.setVisibility(View.GONE);
+			mProgressBar.setVisibility(View.GONE);
 			Toast.makeText(SplashActivity.this, result, Toast.LENGTH_SHORT)
 					.show();
 			setGuided();
@@ -125,10 +125,10 @@ public class SplashActivity extends Activity {
 	 * 用于更新SharedPreferences，下次启动不用再次引导
 	 */
 	private void setGuided() {
-		SharedPreferences preferences = getSharedPreferences(
+		SharedPreferences mSharedPreferences = getSharedPreferences(
 				SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
-		Editor editor = preferences.edit();
-		editor.putBoolean("isFirstIn", false);
-		editor.commit();
+		Editor mEditor = mSharedPreferences.edit();
+		mEditor.putBoolean("isFirstIn", false);
+		mEditor.commit();
 	}
 }
