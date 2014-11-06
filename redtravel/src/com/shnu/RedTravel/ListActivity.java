@@ -2,25 +2,51 @@ package com.shnu.RedTravel;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ListActivity extends Activity {
 	private int mType;
+	private Resources mResources;
+	private ListView mListView;
+	private Query mQuery = null;
+	private Cursor mItemCursor = null;
+	/**
+	 * 定义一个标签,在LogCat内表示EventListFragment
+	 */
+	private static final String TAG = "ListActivity";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list);
+		mListView = (ListView)findViewById(R.id.list_view);
+		mResources = getResources();
 		Intent mIntent = getIntent();
 		mType = mIntent.getExtras().getInt("TYPE");
 		initActionBar(mType);
+		new PoiQuery().execute(mType);
 	}
 
 	private void initActionBar(int type) {
@@ -78,5 +104,79 @@ public class ListActivity extends Activity {
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	class PoiCursorAdapter extends CursorAdapter {
+		private int resourceId;
+
+		public PoiCursorAdapter(Context context, int textViewResourceId,
+				Cursor cursor) {
+			super(context, cursor, textViewResourceId);
+			this.resourceId = textViewResourceId;
+		}
+		
+		public View newView(Context context, Cursor cursor, ViewGroup parent) {  
+	          
+	       LinearLayout view =null;  
+	       LayoutInflater vi = null;  
+	       vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
+	       view =(LinearLayout)vi.inflate(resourceId, parent, false);  
+	           //v =(TextView)vi.inflate(textViewResourceId,null);  
+	       Log.i(TAG,"newView"+view);  
+	       return view;  
+	    }  
+
+		@Override  
+	    public void bindView(View view, Context context, Cursor cursor) {  
+	        Log.i("TAG","bind"+view);  
+	        TextView mTextView = (TextView) view.findViewById(R.id.text_poi_title);
+	        RelativeLayout mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_layout_row);
+	        int imgId = mResources.getIdentifier("img_"+cursor  
+	                .getString(cursor.getColumnIndex(PoiDB.C_ID)), "drawable",
+					"com.shnu.RedTravel");
+			Drawable mDrawable = mResources.getDrawable(imgId);
+			
+	        mRelativeLayout.setBackground(mDrawable);
+	        // Set the name  
+	        mTextView.setText(cursor  
+	                .getString(cursor.getColumnIndex(PoiDB.C_NAME)));  
+	    }  
+	}
+
+	class PoiQuery extends AsyncTask<Integer, Cursor, Cursor> {
+
+		@Override
+		protected Cursor doInBackground(Integer... types) {
+			mQuery = new Query(getApplicationContext());
+			try {
+				mItemCursor = mQuery.getPoiByType(types[0]);
+				int num = mItemCursor.getCount();
+				Log.i(TAG, "ActivityProvider cursor" + num);
+			} catch (Exception e) {
+				Log.e(TAG, e.toString());
+			} finally {
+				if (mItemCursor.isClosed()) {
+					mItemCursor.close();
+				}
+				PoiDB mPoiDB = new PoiDB(getApplicationContext());
+				mPoiDB.closeDatabase();
+			}
+			return mItemCursor;
+		}
+
+		@Override
+		protected void onPostExecute(Cursor result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			if (result != null) {
+				Toast.makeText(ListActivity.this, "成功获取数据",
+						Toast.LENGTH_LONG).show();
+				PoiCursorAdapter mPoiCursorAdapter = new PoiCursorAdapter(ListActivity.this,R.layout.row, result);
+				mListView.setAdapter(mPoiCursorAdapter);
+			} else {
+				Toast.makeText(ListActivity.this, "获取数据失败",
+						Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 }
