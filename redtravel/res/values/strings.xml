@@ -7,4 +7,9 @@
 	<string name="class_3">爱国主义教育基地</string>
 	<string name="class_4">全国爱国主义教育示范基地</string>
 	<string name="class_5">红色地图</string>
+	<string name="txt_address">详细地址</string>
+	<string name="txt_traffic">到达方式</string>
+	<string name="txt_time">开放时间</string>
+	<string name="txt_ticket">门票</string>
+	<string name="txt_tel">联系电话</string>
 </resources>
