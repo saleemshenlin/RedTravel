@@ -197,8 +197,8 @@ public class SplashActivity extends Activity {
 						mContentValues.put(PoiDB.C_NAME, tagText);
 					} else if (strRowName.equals("address")) {
 						mContentValues.put(PoiDB.C_ADDRESS, tagText);
-					} else if (strRowName.equals("triffic")) {
-						mContentValues.put(PoiDB.C_TRIFFIC, tagText);
+					} else if (strRowName.equals("traffic")) {
+						mContentValues.put(PoiDB.C_TRAFFIC, tagText);
 					} else if (strRowName.equals("time")) {
 						mContentValues.put(PoiDB.C_TIME, tagText);
 					} else if (strRowName.equals("ticket")) {

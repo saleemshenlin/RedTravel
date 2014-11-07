@@ -28,7 +28,7 @@ public class PoiDB {
 	 */
 	static final String C_ID = "_id";
 	static final String C_NAME = "_name";
-	static final String C_TRIFFIC = "_trffic";
+	static final String C_TRAFFIC = "_trffic";
 	static final String C_ADDRESS = "_address";
 	static final String C_TIME = "_time";
 	static final String C_TICKET = "_ticket";
@@ -65,7 +65,7 @@ public class PoiDB {
 			Log.i("POIDB", "Creating database: " + DATABASE);
 			db.execSQL("create TABLE " + TABLE + "(" + C_ID
 					+ " INTEGER PRIMARY KEY," + C_NAME + " VARCHAR(128),"
-					+ C_TRIFFIC + " VARCHAR(128)," 
+					+ C_TRAFFIC + " VARCHAR(128)," 
 					+ C_ADDRESS + " VARCHAR(128)," 
 					+ C_TIME + " VARCHAR(128),"
 					+ C_TICKET + " VARCHAR(128),"

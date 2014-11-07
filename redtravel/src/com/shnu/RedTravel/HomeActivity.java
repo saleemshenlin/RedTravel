@@ -1,8 +1,13 @@
 package com.shnu.RedTravel;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -17,6 +22,15 @@ public class HomeActivity extends Activity {
 		initLinearLayout();
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			buildExitDialog(HomeActivity.this);
+		}
+		return false;
+	}
+	
 	private void initLinearLayout() {
 		// TODO Auto-generated method stub
 		LinearLayout mLinearLayout1 = (LinearLayout)findViewById(R.id.linner_layout_class_1);
@@ -92,5 +106,34 @@ public class HomeActivity extends Activity {
 		});
 	}
 	
+	/**
+	 * 用于处理应用退出
+	 * 
+	 * @param context
+	 *            当前上下文
+	 */
+	public static void buildExitDialog(Context context) {
+		AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
+		mBuilder.setMessage("确认退出吗？");
+		mBuilder.setTitle("提示");
+		mBuilder.setPositiveButton("确认", new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+				System.exit(0);
+			}
+		});
+		mBuilder.setNegativeButton("取消", new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		});
+		mBuilder.create().show();
+	}
 
 }

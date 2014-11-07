@@ -2,6 +2,7 @@ package com.shnu.RedTravel;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 
@@ -65,4 +66,19 @@ public class Query{
 		}
 		return mItemCursor;
 	}
+	
+	 public Cursor getPoiById(String id) {
+		 final Uri queryUri = Uri.parse(PoiProvider.CONTENT_URI.toString() + "/"
+		 + id);
+		 try {
+			 mItemCursor = mPoiProvider.query(queryUri, null, null, null, null);
+		 } catch (Exception e) {
+			 Log.e("Query", e.toString());
+		 } finally {
+			 if (mItemCursor.isClosed()) {
+				 mItemCursor.close();
+			 }
+		 }
+		 return mItemCursor;
+	 }
 }

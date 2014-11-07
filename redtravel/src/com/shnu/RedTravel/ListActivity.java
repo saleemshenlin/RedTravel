@@ -19,6 +19,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -30,7 +32,6 @@ public class ListActivity extends Activity {
 	private Resources mResources;
 	private ListView mListView;
 	private Query mQuery = null;
-	private Cursor mItemCursor = null;
 	/**
 	 * 定义一个标签,在LogCat内表示EventListFragment
 	 */
@@ -42,6 +43,22 @@ public class ListActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list);
 		mListView = (ListView)findViewById(R.id.list_view);
+		mListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Intent intent = new Intent(ListActivity.this,
+						DetailActivity.class);
+				intent.putExtra("ID", String.valueOf(id));
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+						| Intent.FLAG_ACTIVITY_NEW_TASK);
+				ListActivity.this.startActivity(intent);
+				ListActivity.this.overridePendingTransition(
+						R.anim.anim_in_right2left,
+						R.anim.anim_out_right2left);
+			}
+		});
 		mResources = getResources();
 		Intent mIntent = getIntent();
 		mType = mIntent.getExtras().getInt("TYPE");
@@ -144,7 +161,7 @@ public class ListActivity extends Activity {
 	}
 
 	class PoiQuery extends AsyncTask<Integer, Cursor, Cursor> {
-
+		Cursor mItemCursor;
 		@Override
 		protected Cursor doInBackground(Integer... types) {
 			mQuery = new Query(getApplicationContext());
@@ -173,6 +190,7 @@ public class ListActivity extends Activity {
 						Toast.LENGTH_LONG).show();
 				PoiCursorAdapter mPoiCursorAdapter = new PoiCursorAdapter(ListActivity.this,R.layout.row, result);
 				mListView.setAdapter(mPoiCursorAdapter);
+				
 			} else {
 				Toast.makeText(ListActivity.this, "获取数据失败",
 						Toast.LENGTH_LONG).show();
